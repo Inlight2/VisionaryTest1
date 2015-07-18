@@ -1,5 +1,5 @@
 # Main Objectives
-1. Make your own git branch with your name in camal case.
+1. Make your own fork with your name in camal case.
 2. Fix all compile errors.
 2. Allow 4-directional movement.
 3. Add proper game over/menu loop.
