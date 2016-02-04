@@ -14,6 +14,11 @@ public class Point {
 		x = _x;
 		y = _y;
 	}
+
+	//And this was the moment I realized I completely forgot about vector2s
+	public static float Distance(Point a, Point b) {
+		return Mathf.Sqrt (Mathf.Pow ((a.x - b.x), 2) + Mathf.Pow ((a.y - b.y), 2));
+	}
 }
 
 public class MapNode : MonoBehaviour {
@@ -24,5 +29,10 @@ public class MapNode : MonoBehaviour {
 	[SerializeField] List<Point> eastDirections = new List<Point>();
 	[SerializeField] List<Point> southDirections = new List<Point>();
 	[SerializeField] List<Point> westDirections = new List<Point>();
+
+	void Awake() {
+		//I have this turned on so I can edit the map easier but it needs to be off during game play
+		GetComponent<MeshRenderer> ().enabled = false;
+	}
 
 }
