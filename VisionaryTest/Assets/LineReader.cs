@@ -15,6 +15,7 @@ public class LineReader : MonoBehaviour {
 	public List<String> lines = new List<string> ();
 
 	void Awake () {
+		//open file, read lines and store lines in a list
 		sourceFile = new FileInfo (fileLocation);
 		reader = sourceFile.OpenText ();
 		while (true){

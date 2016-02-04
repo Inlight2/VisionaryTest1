@@ -18,4 +18,19 @@ public abstract class ReadBase : MonoBehaviour {
 		output = output.Substring (0, output.Length - 1);
 		Debug.Log (output);
 	}
+
+	public void PrintDoubleArray(int[,] arr) {
+		string line = "";
+		int x = 0, y = 0;
+		while (y < arr.GetLength(1)) {
+			while (x < arr.GetLength(0)) {
+				line += arr [x, y];
+				x++;
+			}
+			Debug.Log (line);
+			line = "";
+			x = 0;
+			y++;
+		}
+	}
 }
