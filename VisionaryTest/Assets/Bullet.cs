@@ -33,4 +33,10 @@ public class Bullet : MonoBehaviour {
 			break;
 		}
 	}
+
+	public void OnTriggerEnter (Collider other) {
+		if (other.GetComponent<Enemy> ()) {
+			//respawn
+		}
+	}
 }

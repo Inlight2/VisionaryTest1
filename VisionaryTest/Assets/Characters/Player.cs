@@ -4,6 +4,8 @@ using System.Collections;
 public class Player : Character {
 
 	public static Player player;
+	//the pivot is what turns the gun on the player
+	[SerializeField] GameObject pivot;
 	[SerializeField] Bullet bulletPrefab;
 
 	public enum Direction {
@@ -98,17 +100,13 @@ public class Player : Character {
 	}
 		
 	void FireBullet (Direction dir) {
-		// don't shoot if the player is just holding down the button
-		//if (shooting) {
-		//	return;
-		//}
-		//shooting = true;
 		Bullet newBullet = Instantiate<Bullet> (bulletPrefab);
 		newBullet.transform.position = transform.position;
 		newBullet.SetDirection (dir);
 	}
 
 	void Update() {
+		
 		//get movement inputs from player
 		if (Input.GetKeyDown (KeyCode.W)) {
 			if (curDirection == Direction.SOUTH) {
@@ -138,17 +136,20 @@ public class Player : Character {
 		//get shots fired input
 		if (Input.GetKeyDown (KeyCode.UpArrow)) {
 			FireBullet (Direction.NORTH);
+			//0,0,0,1
+			pivot.transform.localRotation = new Quaternion (0f, 0f, 0f, 1f);
 		} else if (Input.GetKeyDown (KeyCode.RightArrow)) {
 			FireBullet (Direction.EAST);
+			//0,0,0.7,-0.7
+			pivot.transform.localRotation = new Quaternion (0f, 0f, 0.7f, -0.7f);
 		} else if (Input.GetKeyDown (KeyCode.DownArrow)) {
 			FireBullet (Direction.SOUTH);
+			//0,0,1,0
+			pivot.transform.localRotation = new Quaternion (0f, 0f, 1f, 0f);
 		} else if (Input.GetKeyDown (KeyCode.LeftArrow)) {
 			FireBullet (Direction.WEST);
-		}
-
-		if (Input.GetKeyUp (KeyCode.UpArrow) && Input.GetKeyUp (KeyCode.RightArrow) &&
-			Input.GetKeyUp (KeyCode.DownArrow) && Input.GetKeyUp (KeyCode.LeftArrow)) {
-			//shooting = false;
+			//0,0,.7,.7
+			pivot.transform.localRotation = new Quaternion (0f, 0f, 0.7f, 0.7f);
 		}
 
 		if (!moving) {
