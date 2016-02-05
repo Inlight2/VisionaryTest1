@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Enemy : Character {
+	const int _SCORE_WORTH = 10;
+	public int SCORE_WORTH {
+		get {
+			return _SCORE_WORTH;
+		}
+	}
+
 	//to prevent AI backtracking
 	protected MapNode lastNode;
 	//How we keep track of which directions we've already followed
@@ -13,6 +20,7 @@ public class Enemy : Character {
 		List<Point> leaveSpawn = new List<Point> ();
 		leaveSpawn.Add (new Point (0, 2));
 		//leave the spawn
+		directionsIndex = 0;
 		curDirections = leaveSpawn;
 		FollowDirections();
 	}

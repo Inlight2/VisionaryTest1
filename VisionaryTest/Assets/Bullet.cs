@@ -36,7 +36,14 @@ public class Bullet : MonoBehaviour {
 
 	public void OnTriggerEnter (Collider other) {
 		if (other.GetComponent<Enemy> ()) {
-			//respawn
+			GameManager.gameManager.score += other.GetComponent<Enemy>().SCORE_WORTH;
+
+			Destroy (other.gameObject);
+
+			EnemySpawner.spawner.SpawnMoreEnemies ();
+			EnemySpawner.spawner.SpawnMoreEnemies ();
+
+			Destroy (gameObject);
 		}
 	}
 }

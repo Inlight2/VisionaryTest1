@@ -42,6 +42,10 @@ public class Player : Character {
 		//but won't stick you to a wall
 		nextDirection = Direction.NORTH;
 		curDirection = Direction.NORTH;
+
+		//I'm getting some wierd physics interaction on the player, and
+		//flipping these options fix it
+
 	}
 
 	Vector2 DirectionToVector(Direction dir) {
@@ -154,6 +158,14 @@ public class Player : Character {
 
 		if (!moving) {
 			Move ();
+		}
+	}
+
+	public void OnTriggerEnter (Collider other) {
+		if (other.GetComponent<Enemy> ()) {
+			Destroy (gameObject);
+
+			GameManager.gameManager.EndGame ();
 		}
 	}
 }
