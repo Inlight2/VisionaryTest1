@@ -5,13 +5,17 @@ using System;
 //Character moves in global coordinates
 public class Character : MonoBehaviour {
 	//character's movement speed
-	[SerializeField] protected float initialSpeed = 0.1f;
 	[SerializeField] protected float speed = 0.1f;
+
 	//when a character over steps the target destination but we still want the movement past that object to be smooth
-	private float overStep;
+	protected float overStep;
 
 	void OnDisable() {
 		StopAllCoroutines ();
+	}
+
+	public void MoveTo(Vector2 v, Action a = null) {
+		StartCoroutine(MoveTo(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), a));
 	}
 
 	/// <summary>

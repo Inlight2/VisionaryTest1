@@ -7,8 +7,8 @@ using System.Collections.Generic;
 /// A class to hold x and y directions for AI
 /// </summary>
 public class Point {
-	[SerializeField] int x;
-	[SerializeField] int y;
+	[SerializeField] public int x;
+	[SerializeField] public int y;
 
 	public Point(int _x, int _y) {
 		x = _x;
