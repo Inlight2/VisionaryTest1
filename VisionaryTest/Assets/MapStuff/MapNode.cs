@@ -30,9 +30,71 @@ public class MapNode : MonoBehaviour {
 	[SerializeField] List<Point> southDirections = new List<Point>();
 	[SerializeField] List<Point> westDirections = new List<Point>();
 
+	public List<Point> North {
+		get {
+			return northDirections;
+		}
+	}
+
+	public List<Point> East {
+		get {
+			return eastDirections;
+		}
+	}
+
+	public List<Point> South {
+		get {
+			return southDirections;
+		}
+	}
+
+	public List<Point> West {
+		get {
+			return westDirections;
+		}
+	}
+
 	void Awake() {
 		//I have this turned on so I can edit the map easier but it needs to be off during game play
 		GetComponent<MeshRenderer> ().enabled = false;
+	}
+
+	void Start() {
+		MapInfo.map.AddNodeToMap (this);
+	}
+
+	public MapNode GetNodeFor(List<Point> points) {
+		Vector2 position = new Vector2 (transform.position.x, transform.position.y);
+		foreach (Point p in points) {
+			position.x += p.x;
+			position.y += p.y;
+		}
+
+		return MapInfo.map.GetNodeAt (position.x, position.y);
+	}
+
+	public MapNode NorthNode {
+		get {
+			return GetNodeFor (North);
+		}
+	}
+
+	public MapNode EastNode {
+		get {
+			return GetNodeFor (East);
+		}
+	}
+
+	public MapNode SouthNode {
+		get {
+			return GetNodeFor (South);
+		}
+	}
+
+	public MapNode WestNode {
+		get {
+			return GetNodeFor (West);
+		}
 	}
 
 }

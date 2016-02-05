@@ -14,8 +14,8 @@ public class Character : MonoBehaviour {
 		StopAllCoroutines ();
 	}
 
-	public void MoveTo(Vector2 v, Action a = null) {
-		StartCoroutine(MoveTo(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), a));
+	public void MoveTo(float x, float y, Action a = null) {
+		StartCoroutine(MoveTo(Mathf.RoundToInt(x), Mathf.RoundToInt(y), a));
 	}
 
 	/// <summary>
@@ -24,7 +24,7 @@ public class Character : MonoBehaviour {
 	/// <param name="x">The x coordinate.</param>
 	/// <param name="y">The y coordinate.</param>
 	/// <param name="a">A method to be run on completion.</param>
-	public IEnumerator MoveTo(int x, int y, Action a = null) {
+	IEnumerator MoveTo(int x, int y, Action a = null) {
 		//overstep is carried over from last moveTo but has to be stepped
 		//first in over to keep a consistent speed around corners
 		if (overStep > 0) {
@@ -52,19 +52,17 @@ public class Character : MonoBehaviour {
 	/// <param name="y">The y destination.</param>
 	public bool MoveTowards(int x, int y) {
 		Vector3 destination = new Vector3 (x, y, 0f);
-
 		//we need to detect if we're going to over step the target and save the extra movement for the next time we move
 		float distance = Vector3.Distance (destination, gameObject.transform.position);
 
-		if (distance < speed) {
+		if (distance < speed * Time.deltaTime) {
 			overStep = speed - distance;
 			transform.position = new Vector3 (x, y, transform.position.z);
 			return false;
 		} else {
 			//get the direction we're moving
-			Vector3 direction = new Vector3 (transform.position.x - destination.x, transform.position.y - y, 0f);
+			Vector3 direction = new Vector3 (destination.x - transform.position.x, destination.y - transform.position.y, 0f);
 			direction.Normalize();
-
 			//store an overstep if there's overstep
 			float speedThisFrame = speed;
 			if (overStep > 0) {
@@ -78,9 +76,5 @@ public class Character : MonoBehaviour {
 			transform.position = newPosition;
 			return true;
 		}
-
-
 	}
-
-
 }

@@ -15,6 +15,7 @@ public class MapInfo : MonoBehaviour {
 	/// A 1 is a wall that cannot be traversed while a 0 is free space.
 	/// </summary>
 	private int[,] binary = new int[19,11];
+	private MapNode[,] nodeMap = new MapNode[19, 11];
 
 	void Awake() {
 		//allow this object to be access statically
@@ -32,6 +33,10 @@ public class MapInfo : MonoBehaviour {
 				binary [i, j] = (int)char.GetNumericValue (str [i]);
 			}
 		}
+	}
+
+	Point ConvertToMapLocation (float x, float y) {
+		return ConvertToMapLocation (Mathf.RoundToInt (x), Mathf.RoundToInt (y));
 	}
 
 	/// <summary>
@@ -57,13 +62,36 @@ public class MapInfo : MonoBehaviour {
 	/// <returns><c>true</c> if this instance is a wall at the specified x y; otherwise, <c>false</c>.</returns>
 	/// <param name="x">The x coordinate.</param>
 	/// <param name="y">The y coordinate.</param>
-	public bool IsWall (float _x, float _y) {
-		int x = Mathf.RoundToInt (_x);
-		int y = Mathf.RoundToInt (_y);
+	public bool IsWall (float x, float y) {
 
 		//Use Point here so we don't have to keep converting to int
 		Point mapLocation = ConvertToMapLocation (x, y);
 		//1 wall, 0 open
 		return binary[mapLocation.x, mapLocation.y] == WALL;
 	}
+
+	/// <summary>
+	/// Adds the node to map.
+	/// </summary>
+	/// <param name="node">Node.</param>
+	public void AddNodeToMap (MapNode node) {
+		Point mapLocation = ConvertToMapLocation (node.transform.position.x, node.transform.position.y);
+		if (nodeMap [mapLocation.x, mapLocation.y] != null) {
+			Debug.LogError ("two nodes some how got added to the same location");
+		}
+		nodeMap [mapLocation.x, mapLocation.y] = node;
+	}
+
+	/// <summary>
+	/// Gets the node at world position.
+	/// </summary>
+	/// <returns>The <see cref="MapNode"/>.</returns>
+	/// <param name="position">World position.</param>
+	public MapNode GetNodeAt (float x, float y) {
+		Point mapLocation = ConvertToMapLocation (x, y);
+		MapNode node = nodeMap [mapLocation.x, mapLocation.y];
+		return node;
+	}
+
+
 }
