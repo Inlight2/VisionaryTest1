@@ -16,13 +16,24 @@ public class Enemy : Character {
 	int directionsIndex = 0;
 	protected List<Point> curDirections;
 
-	void OnEnable() {
+	protected override void OnEnable() {
+		base.OnEnable ();
+		Pickup.Boost += this.Boost;
+
 		List<Point> leaveSpawn = new List<Point> ();
 		leaveSpawn.Add (new Point (0, 2));
 		//leave the spawn
 		directionsIndex = 0;
 		curDirections = leaveSpawn;
 		FollowDirections();
+	}
+
+	protected override void OnDisable() {
+		Pickup.Boost -= this.Boost;
+	}
+
+	void Boost() {
+		speed += 2;
 	}
 
 	/// <summary>

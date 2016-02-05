@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
 
 	public static Action BeginEvent;
 	public static Action EndEvent;
+	public static Action<Enemy> EnemyKilledEvent;
 
 	int _score;
 	public int score {
@@ -26,14 +27,21 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	bool gameOn = false;
+	bool _gameOn = false;
+	public bool GameOn {
+		get {
+			return _gameOn;
+		}
+	}
 
 	void Awake() {
 		gameManager = this;
+
+		EnemyKilledEvent += EnemyKilled;
 	}
 
 	public void StartGame () {
-		if (gameOn) {
+		if (_gameOn) {
 			return;
 		}
 
@@ -42,19 +50,23 @@ public class GameManager : MonoBehaviour {
 		newPlayer.transform.position = playerSpawn.transform.position;
 
 		//trigger any classes that are listening for the begin event
-		BeginEvent ();
-		gameOn = true;
+		if (BeginEvent != null) {
+			BeginEvent ();
+		}
+		_gameOn = true;
 
 		score = 0;
 	}
 
 	public void EndGame () {
-		if (!gameOn) {
+		if (!_gameOn) {
 			return;
 		}
 		//trigger any classes listening for the endEvent
-		EndEvent ();
-		gameOn = false;
+		if (EndEvent != null) {
+			EndEvent ();
+		}
+		_gameOn = false;
 
 		if (Player.player != null) {
 			Destroy (Player.player.gameObject);
@@ -67,9 +79,28 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	const int SCORE_TICKS = 7;
+	int ticks = 0;
+
 	void Update() {
+		if (_gameOn) {
+			ticks++;
+			if (ticks >= SCORE_TICKS) {
+				score += 1;
+				ticks = 0;
+			}
+		}
+
 		if (Input.GetKeyDown (KeyCode.Return)) {
 			StartGame ();
 		}
+	}
+
+	void EnemyKilled(Enemy enemy) {
+		score += enemy.SCORE_WORTH;
+		Destroy (enemy.gameObject);
+
+		EnemySpawner.spawner.SpawnMoreEnemies ();
+		EnemySpawner.spawner.SpawnMoreEnemies ();
 	}
 }

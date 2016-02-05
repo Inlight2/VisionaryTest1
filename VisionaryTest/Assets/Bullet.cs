@@ -9,6 +9,10 @@ public class Bullet : MonoBehaviour {
 	public float speed = 10f;
 	Vector3 direction = Vector3.zero;
 
+	public bool piercing = false;
+	const int PIERCE_LIMIT = 3;
+	int pierces = 0;
+
 	void Update () {
 		transform.position = transform.position + direction * speed * Time.deltaTime;
 		if (Mathf.Abs (transform.position.x) > HORIZONTAL_LIMIT || Mathf.Abs (transform.position.y) > VERTICAL_LIMIT  ||
@@ -36,14 +40,20 @@ public class Bullet : MonoBehaviour {
 
 	public void OnTriggerEnter (Collider other) {
 		if (other.GetComponent<Enemy> ()) {
-			GameManager.gameManager.score += other.GetComponent<Enemy>().SCORE_WORTH;
+			GameManager.EnemyKilledEvent (other.GetComponent<Enemy> ());
+			if (piercing && pierces <= PIERCE_LIMIT) {
+				pierces++;
+			} else {
+				Destroy (gameObject);
+			}
+		} else if (other.GetComponent<Pickup>() && other.GetComponent<Pickup>().curType == Pickup.pickType.ENEMY_BOOST) {
+			//Destroy (other.gameObject);
 
-			Destroy (other.gameObject);
-
-			EnemySpawner.spawner.SpawnMoreEnemies ();
-			EnemySpawner.spawner.SpawnMoreEnemies ();
-
-			Destroy (gameObject);
+			if (piercing && pierces <= PIERCE_LIMIT) {
+				pierces++;
+			} else {
+				Destroy (gameObject);
+			}
 		}
 	}
 }

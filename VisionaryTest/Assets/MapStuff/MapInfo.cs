@@ -15,7 +15,22 @@ public class MapInfo : MonoBehaviour {
 	/// A 1 is a wall that cannot be traversed while a 0 is free space.
 	/// </summary>
 	private int[,] binary = new int[19,11];
+
+	/// <summary>
+	/// Contains refferences to all the nodes on the map
+	/// </summary>
 	private MapNode[,] nodeMap = new MapNode[19, 11];
+
+	public int MapRangeX {
+		get {
+			return binary.GetLength (0);
+		}
+	}
+	public int MapRangeY {
+		get {
+			return binary.GetLength (1);
+		}
+	}
 
 	void Awake() {
 		//allow this object to be access statically
@@ -45,11 +60,21 @@ public class MapInfo : MonoBehaviour {
 	/// <returns>The to map location.</returns>
 	/// <param name="x">The x coordinate.</param>
 	/// <param name="y">The y coordinate.</param>
-	Point ConvertToMapLocation (int x, int y) {
+	public Point ConvertToMapLocation (int x, int y) {
 		Point mapLocation = new Point (0, 0);
 		mapLocation.x = x + MAP_X_OFFSET;//9
 		mapLocation.y = MAP_Y_OFFSET - y;//5
 		return mapLocation;
+	}
+
+	//coverts back to world position from map position
+	public Point ConvertToWorldLocation(int x, int y) {
+		//surprisingly the exact same equation to convert back
+		Point worldLocation = new Point (0, 0);
+		worldLocation.x = x - MAP_X_OFFSET;
+		worldLocation.y = MAP_Y_OFFSET - y;
+
+		return worldLocation;
 	}
 
 	public bool IsWall (Vector2 v) {
@@ -67,6 +92,10 @@ public class MapInfo : MonoBehaviour {
 		//Use Point here so we don't have to keep converting to int
 		Point mapLocation = ConvertToMapLocation (x, y);
 		//1 wall, 0 open
+		return IsWallMapSpace(mapLocation);
+	}
+
+	public bool IsWallMapSpace (Point mapLocation) {
 		return binary[mapLocation.x, mapLocation.y] == WALL;
 	}
 

@@ -8,6 +8,9 @@ public class Player : Character {
 	[SerializeField] GameObject pivot;
 	[SerializeField] Bullet bulletPrefab;
 
+	[SerializeField] Material normalMaterial;
+	[SerializeField] Material ghostMaterial;
+
 	public enum Direction {
 		NORTH,
 		EAST,
@@ -15,6 +18,7 @@ public class Player : Character {
 		WEST,
 	}
 
+	const float GHOST_DURATION = 5;
 	public enum Mode {
 		GHOST,
 		NORMAL,
@@ -33,6 +37,8 @@ public class Player : Character {
 	//where we came from
 	private Vector2 origin;
 
+	public int piercingBullets = 0;
+
 	void Awake() {
 		player = this;
 		origin = new Vector2 (transform.position.x, transform.position.y);
@@ -46,6 +52,11 @@ public class Player : Character {
 		//I'm getting some wierd physics interaction on the player, and
 		//flipping these options fix it
 
+	}
+
+	//reduces speed back to it's original value;
+	public void RevertSpeed() {
+		speed = 3f;
 	}
 
 	Vector2 DirectionToVector(Direction dir) {
@@ -107,6 +118,28 @@ public class Player : Character {
 		Bullet newBullet = Instantiate<Bullet> (bulletPrefab);
 		newBullet.transform.position = transform.position;
 		newBullet.SetDirection (dir);
+		if (piercingBullets > 0) {
+			newBullet.piercing = true;
+			piercingBullets--;
+		}
+	}
+
+	public void BeginGhost() {
+		//reset the timer if we're already ghosting
+		if (curMode == Mode.GHOST) {
+			StopCoroutine ("Ghost");
+		}
+		
+		StartCoroutine ("Ghost");
+	}
+
+	//ghost mode for 5 seconds
+	IEnumerator Ghost() {
+		curMode = Mode.GHOST;
+		GetComponent<MeshRenderer> ().material = ghostMaterial;
+		yield return new WaitForSeconds (GHOST_DURATION);
+		GetComponent<MeshRenderer> ().material = normalMaterial;
+		curMode = Mode.NORMAL;
 	}
 
 	void Update() {
@@ -163,9 +196,10 @@ public class Player : Character {
 
 	public void OnTriggerEnter (Collider other) {
 		if (other.GetComponent<Enemy> ()) {
-			Destroy (gameObject);
-
-			GameManager.gameManager.EndGame ();
+			if (curMode == Mode.NORMAL) {
+				Destroy (gameObject);
+				GameManager.gameManager.EndGame ();
+			}
 		}
 	}
 }

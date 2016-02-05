@@ -4,14 +4,21 @@ using System;
 
 //Character moves in global coordinates
 public class Character : MonoBehaviour {
+	//The amount we increase speed evertime something dies.
+	const float SPEED_INCREASE = 0.1f;
 	//character's movement speed
-	[SerializeField] protected float speed = 0.1f;
+	[SerializeField] protected float speed = 3f;
 
 	//when a character over steps the target destination but we still want the movement past that object to be smooth
 	protected float overStep;
 
-	void OnDisable() {
+	protected virtual void OnEnable() {
+		GameManager.EnemyKilledEvent += EnemyKilled;
+	}
+
+	protected virtual void OnDisable() {
 		StopAllCoroutines ();
+		GameManager.EnemyKilledEvent -= EnemyKilled;
 	}
 
 	public void MoveTo(float x, float y, Action a = null) {
@@ -76,5 +83,9 @@ public class Character : MonoBehaviour {
 			transform.position = newPosition;
 			return true;
 		}
+	}
+
+	protected void EnemyKilled(Enemy e) {
+		speed += SPEED_INCREASE;
 	}
 }

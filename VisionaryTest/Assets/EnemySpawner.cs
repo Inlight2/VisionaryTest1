@@ -35,7 +35,7 @@ public class EnemySpawner : MonoBehaviour {
 	}
 
 	void Update() {
-		if (enemiesToSpawn.Count > 0 && waitedFrames >= spawnWaitFrames) {
+		if (enemiesToSpawn.Count > 0 && waitedFrames >= spawnWaitFrames && GameManager.gameManager.GameOn) {
 			Enemy toSpawn = enemiesToSpawn.Dequeue ();
 			toSpawn.gameObject.SetActive (true);
 			waitedFrames = 0;
